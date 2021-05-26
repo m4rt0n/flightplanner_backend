@@ -3,7 +3,9 @@ package com.lanoga.flightplanner.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,18 +59,26 @@ public class FlightCompanyService {
 	}
 
 	public Company saveCompany(String companyName) {
-		Company c = new Company(companyName);
-		return cRepo.save(c);
+		Company company = new Company(companyName);
+		return cRepo.save(company);
 	}
 
 	public Company updateCompany(long id, String companyName) throws CompanyNotFoundException {
-		Company c = cRepo.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
-		c.setCompanyName(companyName);
-		return cRepo.save(c);
+		Company company = cRepo.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
+		company.setCompanyName(companyName);
+		return cRepo.save(company);
 	}
 
 	public void deleteCompanyById(long id) {
 		cRepo.deleteById(id);
 	}
 
+	public List<Flight> getFlightsByCompany(String companyName) {
+		List<Company> cList = new ArrayList<>();
+		cRepo.findAll().forEach(cList::add);
+		Optional<Company> company = cList.stream().filter(c -> c.getCompanyName().equals(companyName)).findFirst();
+		List<Flight> flights = company.get().getFlights();
+		flights.sort(Comparator.comparing(Flight::getDepartureDate));
+		return flights;
+	}
 }
