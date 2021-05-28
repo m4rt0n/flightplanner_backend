@@ -27,27 +27,6 @@ public class FlightCompanyService {
 	@Autowired
 	AirportRepo aRepo;
 
-	public void addEntities() {
-		LocalDateTime now = LocalDateTime.of(2021, 5, 21, 10, 10);
-
-		Company qatar = new Company("Qatar");
-		Company lufthansa = new Company("Lufthansa");
-		Company ryanair = new Company("Ryanair");
-		cRepo.saveAll(Arrays.asList(qatar, lufthansa, ryanair));
-
-		Airport moscow = new Airport("Moscow");
-		Airport budapest = new Airport("Budapest");
-		Airport berlin = new Airport("Berlin");
-		aRepo.saveAll(Arrays.asList(moscow, budapest, berlin));
-
-		Flight moscowToBudapest = new Flight((Arrays.asList(moscow, budapest)), now, (now.plusHours(1)), qatar);
-		Flight moscowToBerlin = new Flight((Arrays.asList(moscow, berlin)), (now.plusHours(1)), (now.plusHours(2)),
-				lufthansa);
-		Flight berlinToBudapest = new Flight((Arrays.asList(berlin, budapest)), (now.plusHours(3)), (now.plusHours(4)),
-				ryanair);
-		fRepo.saveAll(Arrays.asList(moscowToBudapest, moscowToBerlin, berlinToBudapest));
-	}
-
 	public List<Company> getAllCompanies() {
 		List<Company> cList = new ArrayList<>();
 		cRepo.findAll().forEach(cList::add);
@@ -59,7 +38,8 @@ public class FlightCompanyService {
 	}
 
 	public Company saveCompany(String companyName) {
-		Company company = new Company(companyName);
+		Company company = new Company();
+		company.setCompanyName(companyName);
 		return cRepo.save(company);
 	}
 
@@ -81,4 +61,45 @@ public class FlightCompanyService {
 		flights.sort(Comparator.comparing(Flight::getDepartureDate));
 		return flights;
 	}
+
+	public void addEntities() {
+		LocalDateTime now = LocalDateTime.of(2021, 5, 21, 10, 10);
+
+		Company qatar = new Company();
+		qatar.setCompanyName("Qatar");
+		Company lufthansa = new Company();
+		lufthansa.setCompanyName("Lufthansa");
+		Company ryanair = new Company();
+		ryanair.setCompanyName("Ryanair");
+		cRepo.saveAll(Arrays.asList(qatar, lufthansa, ryanair));
+
+		Airport moscow = new Airport();
+		moscow.setAirportName("Moscow");
+		Airport budapest = new Airport();
+		budapest.setAirportName("Budapest");
+		Airport berlin = new Airport();
+		berlin.setAirportName("Berlin");
+		aRepo.saveAll(Arrays.asList(moscow, budapest, berlin));
+
+		Flight moscowToBudapest = new Flight();
+		moscowToBudapest.setAirports(Arrays.asList(moscow, budapest));
+		moscowToBudapest.setDepartureDate(now);
+		moscowToBudapest.setArrivalTime(now.plusHours(1));
+		moscowToBudapest.setCompany(qatar);
+
+		Flight moscowToBerlin = new Flight();
+		moscowToBerlin.setAirports(Arrays.asList(moscow, berlin));
+		moscowToBerlin.setDepartureDate(now.plusHours(1));
+		moscowToBerlin.setArrivalTime(now.plusHours(2));
+		moscowToBerlin.setCompany(lufthansa);
+
+		Flight berlinToBudapest = new Flight();
+		berlinToBudapest.setAirports(Arrays.asList(berlin, budapest));
+		berlinToBudapest.setDepartureDate(now.plusHours(3));
+		berlinToBudapest.setArrivalTime(now.plusHours(4));
+		berlinToBudapest.setCompany(ryanair);
+
+		fRepo.saveAll(Arrays.asList(moscowToBudapest, moscowToBerlin, berlinToBudapest));
+	}
+
 }

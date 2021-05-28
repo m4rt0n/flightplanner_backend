@@ -16,30 +16,27 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "flight")
 @Data
+@NoArgsConstructor
 public class Flight {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@NonNull
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "airports_flights", joinColumns = @JoinColumn(name = "airport_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "flight_id", referencedColumnName = "id"))
 	private List<Airport> airports;
 
-	@NonNull
 	@Column(name = "departure_date")
 	private LocalDateTime departureDate;
 
-	@NonNull
 	@Column(name = "arrival_date")
 	private LocalDateTime arrivalTime;
 
-	@NonNull
 	@ManyToOne
 	@JoinColumn(name = "company_id")
 	private Company company;
