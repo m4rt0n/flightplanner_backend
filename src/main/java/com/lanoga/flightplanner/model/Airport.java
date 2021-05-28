@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -26,6 +28,8 @@ public class Airport {
 	@Column(name = "airport_name")
 	private String airportName;
 
+//	@JsonIgnore
+	@JsonBackReference
 	@ManyToMany(mappedBy = "airports")
 	private List<Flight> flights;
 

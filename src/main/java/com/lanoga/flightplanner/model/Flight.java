@@ -3,7 +3,6 @@ package com.lanoga.flightplanner.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +13,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +29,8 @@ public class Flight {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@JsonManagedReference
+	@ManyToMany
 	@JoinTable(name = "airports_flights", joinColumns = @JoinColumn(name = "airport_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "flight_id", referencedColumnName = "id"))
 	private List<Airport> airports;
 
@@ -37,6 +40,7 @@ public class Flight {
 	@Column(name = "arrival_date")
 	private LocalDateTime arrivalTime;
 
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "company_id")
 	private Company company;

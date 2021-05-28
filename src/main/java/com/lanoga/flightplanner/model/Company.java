@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +27,8 @@ public class Company {
 	@Column(name = "company_name")
 	private String companyName;
 
-	// , cascade = { CascadeType.PERSIST, CascadeType.MERGE }
+//	@JsonIgnore
+	@JsonManagedReference
 	@OneToMany(mappedBy = "company")
 	private List<Flight> flights;
 
