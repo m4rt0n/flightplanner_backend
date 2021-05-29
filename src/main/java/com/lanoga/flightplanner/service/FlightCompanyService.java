@@ -84,14 +84,15 @@ public class FlightCompanyService implements IFlightCompanyService {
 			for (int j = 0; j < fList.size(); j++) {
 
 				Flight secondFlight = fList.get(j);
-				// if (isTransfer(firstFlight, secondFlight, departure, arrival)) {
+
 				if (isTransfer(firstFlight, secondFlight, departure, arrival)) {
-					System.out.println("first : " + firstFlight.getDepartureAirport().getAirportName() + " : "
-							+ firstFlight.getArrivalAirport().getAirportName() + " -- sec : "
-							+ secondFlight.getDepartureAirport().getAirportName() + " : "
-							+ secondFlight.getArrivalAirport().getAirportName());
+					System.out.println(String.format("first: \n %s %s - %s %s \n second: \n %s %s - %s %s",
+							firstFlight.getDepartureAirport().getAirportName(), firstFlight.getDepartureTime(),
+							firstFlight.getArrivalAirport().getAirportName(), firstFlight.getArrivalTime(),
+							secondFlight.getDepartureAirport().getAirportName(), secondFlight.getDepartureTime(),
+							secondFlight.getArrivalAirport().getAirportName(), secondFlight.getArrivalTime()));
 				}
-				// }
+
 			}
 
 		}
