@@ -15,18 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lanoga.flightplanner.model.Company;
 import com.lanoga.flightplanner.model.CompanyNotFoundException;
 import com.lanoga.flightplanner.model.Flight;
-import com.lanoga.flightplanner.service.FlightCompanyService;
+import com.lanoga.flightplanner.service.IFlightCompanyService;
 
 @RestController
 @RequestMapping(path = "/company")
 public class FlightCompanyController {
 	@Autowired
-	FlightCompanyService service;
-
-	@PostMapping("/add")
-	public void addEntities() {
-		service.addEntities();
-	}
+	IFlightCompanyService service;
 
 	@GetMapping("/getall")
 	public List<Company> getAllCompanies() {
@@ -58,5 +53,11 @@ public class FlightCompanyController {
 	public List<Flight> getAllFlightsByCompany(@RequestParam(value = "name") String name)
 			throws CompanyNotFoundException {
 		return service.getFlightsByCompany(name);
+	}
+
+	@GetMapping("/getflightsbyairports")
+	public List<Flight> getAllFlightsByCompany(@RequestParam(value = "departure") String departure,
+			@RequestParam(value = "arrival") String arrival) {
+		return service.getFlightsByAirports(departure, arrival);
 	}
 }
