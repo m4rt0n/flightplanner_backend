@@ -2,7 +2,9 @@ package com.lanoga.flightplanner.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +62,7 @@ public class FlightCompanyService implements IFlightCompanyService {
 	}
 
 	@Override
-	public List<Flight> getFlightsByAirports(String departure, String arrival) {
+	public Map<String, Flight> getFlightsByAirports(String departure, String arrival) {
 		List<Flight> fList = new ArrayList<>();
 		fRepo.findAll().forEach(fList::add);
 
@@ -74,19 +76,36 @@ public class FlightCompanyService implements IFlightCompanyService {
 	}
 
 	@Override
-	public List<Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival) {
-		List<Flight> connectedFlights = new ArrayList<>();
+	public Map<String, Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival) {
+		Map<String, Flight> connectedFlights = new HashMap<>();
+
 		for (int i = 0; i < fList.size(); i++) {
 			Flight firstFlight = fList.get(i);
-
 			for (int j = 0; j < fList.size(); j++) {
-				Flight secondFlight = fList.get(j);
 
+				Flight secondFlight = fList.get(j);
+				// if (isTransfer(firstFlight, secondFlight, departure, arrival)) {
+				if (isTransfer(firstFlight, secondFlight, departure, arrival)) {
+					System.out.println("first : " + firstFlight.getDepartureAirport().getAirportName() + " : "
+							+ firstFlight.getArrivalAirport().getAirportName() + " -- sec : "
+							+ secondFlight.getDepartureAirport().getAirportName() + " : "
+							+ secondFlight.getArrivalAirport().getAirportName());
+				}
+				// }
 			}
 
 		}
 
 		return connectedFlights;
+	}
 
+	@Override
+	public boolean isTransfer(Flight firstFlight, Flight secondFlight, String departure, String arrival) {
+		return ((firstFlight != secondFlight)
+				&& (firstFlight.getDepartureAirport().getAirportName().equals(departure)
+						&& secondFlight.getArrivalAirport().getAirportName().equals(arrival))
+				&& (firstFlight.getArrivalAirport().getAirportName()
+						.equals(secondFlight.getDepartureAirport().getAirportName()))
+				&& (firstFlight.getArrivalTime().compareTo(secondFlight.getDepartureTime()) < 0));
 	}
 }

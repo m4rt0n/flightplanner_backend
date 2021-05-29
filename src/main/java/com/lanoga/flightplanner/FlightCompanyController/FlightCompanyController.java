@@ -1,6 +1,7 @@
 package com.lanoga.flightplanner.FlightCompanyController;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,7 +57,7 @@ public class FlightCompanyController {
 	}
 
 	@GetMapping("/getflightsbyairports")
-	public List<Flight> getAllFlightsByCompany(@RequestParam(value = "departure") String departure,
+	public Map<String, Flight> getAllFlightsByCompany(@RequestParam(value = "departure") String departure,
 			@RequestParam(value = "arrival") String arrival) {
 		return service.getFlightsByAirports(departure, arrival);
 	}

@@ -1,6 +1,7 @@
 package com.lanoga.flightplanner.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.lanoga.flightplanner.model.Company;
 import com.lanoga.flightplanner.model.CompanyNotFoundException;
@@ -19,7 +20,9 @@ public interface IFlightCompanyService {
 
 	public List<Flight> getFlightsByCompany(String companyName);
 
-	public List<Flight> getFlightsByAirports(String departure, String arrival);
+	public Map<String, Flight> getFlightsByAirports(String departure, String arrival);
 
-	public List<Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival);
+	public Map<String, Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival);
+
+	boolean isTransfer(Flight firstFlight, Flight secondFlight, String departure, String arrival);
 }
