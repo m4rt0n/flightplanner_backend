@@ -48,7 +48,9 @@ public class FlightplannerApplication {
 			budapest.setAirportName("Budapest");
 			Airport berlin = new Airport();
 			berlin.setAirportName("Berlin");
-			aRepo.saveAll(Arrays.asList(moscow, budapest, berlin));
+			Airport tbilisi = new Airport();
+			tbilisi.setAirportName("Tbilisi");
+			aRepo.saveAll(Arrays.asList(moscow, budapest, berlin, tbilisi));
 
 			Flight moscowToBudapest = new Flight();
 			moscowToBudapest.setDepartureAirport(moscow);
@@ -71,7 +73,22 @@ public class FlightplannerApplication {
 			berlinToBudapest.setArrivalTime(now.plusHours(7));
 			berlinToBudapest.setCompany(ryanair);
 
-			fRepo.saveAll(Arrays.asList(moscowToBudapest, moscowToBerlin, berlinToBudapest));
+			Flight moscowToTbilisi = new Flight();
+			moscowToTbilisi.setDepartureAirport(moscow);
+			moscowToTbilisi.setArrivalAirport(tbilisi);
+			moscowToTbilisi.setDepartureTime(now.plusHours(3));
+			moscowToTbilisi.setArrivalTime(now.plusHours(4));
+			moscowToTbilisi.setCompany(lufthansa);
+
+			Flight tbilisiToBudapest = new Flight();
+			tbilisiToBudapest.setDepartureAirport(tbilisi);
+			tbilisiToBudapest.setArrivalAirport(budapest);
+			tbilisiToBudapest.setDepartureTime(now.plusHours(6));
+			tbilisiToBudapest.setArrivalTime(now.plusHours(7));
+			tbilisiToBudapest.setCompany(qatar);
+
+			fRepo.saveAll(Arrays.asList(moscowToBudapest, moscowToBerlin, berlinToBudapest, moscowToTbilisi,
+					tbilisiToBudapest));
 		};
 	}
 

@@ -62,7 +62,7 @@ public class FlightCompanyService implements IFlightCompanyService {
 	}
 
 	@Override
-	public Map<String, Flight> getFlightsByAirports(String departure, String arrival) {
+	public List<Map<String, Flight>> getFlightsByAirports(String departure, String arrival) {
 		List<Flight> fList = new ArrayList<>();
 		fRepo.findAll().forEach(fList::add);
 
@@ -76,31 +76,38 @@ public class FlightCompanyService implements IFlightCompanyService {
 	}
 
 	@Override
-	public Map<String, Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival) {
-		Map<String, Flight> connectedFlights = new HashMap<>();
+	public List<Map<String, Flight>> getConnectedFlights(List<Flight> fList, String departure, String arrival) {
+
+		List<Map<String, Flight>> listOfconnectedFlights = new ArrayList<Map<String, Flight>>();
 
 		for (int i = 0; i < fList.size(); i++) {
+
 			Flight firstFlight = fList.get(i);
 			for (int j = 0; j < fList.size(); j++) {
 
 				Flight secondFlight = fList.get(j);
 
 				if (isTransfer(firstFlight, secondFlight, departure, arrival)) {
-					System.out.println(String.format("first: \n %s %s - %s %s \n second: \n %s %s - %s %s",
+					System.out.println(String.format(" first: \n %s : %s %s - %s %s \n second: \n %s : %s %s - %s %s",
+							firstFlight.getCompany().getCompanyName(),
 							firstFlight.getDepartureAirport().getAirportName(), firstFlight.getDepartureTime(),
 							firstFlight.getArrivalAirport().getAirportName(), firstFlight.getArrivalTime(),
+							secondFlight.getCompany().getCompanyName(),
 							secondFlight.getDepartureAirport().getAirportName(), secondFlight.getDepartureTime(),
 							secondFlight.getArrivalAirport().getAirportName(), secondFlight.getArrivalTime()));
+					Map<String, Flight> connectedFlights = new HashMap<>();
+					connectedFlights.put("First", firstFlight);
+					connectedFlights.put("Second", secondFlight);
+					listOfconnectedFlights.add(connectedFlights);
 				}
 
 			}
 
 		}
-
-		return connectedFlights;
+		// listOfconnectedFlights.add(connectedFlights);
+		return listOfconnectedFlights;
 	}
 
-	@Override
 	public boolean isTransfer(Flight firstFlight, Flight secondFlight, String departure, String arrival) {
 		return ((firstFlight != secondFlight)
 				&& (firstFlight.getDepartureAirport().getAirportName().equals(departure)

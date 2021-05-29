@@ -20,9 +20,9 @@ public interface IFlightCompanyService {
 
 	public List<Flight> getFlightsByCompany(String companyName);
 
-	public Map<String, Flight> getFlightsByAirports(String departure, String arrival);
-
-	public Map<String, Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival);
+	public List<Map<String, Flight>> getFlightsByAirports(String departure, String arrival);
 
 	boolean isTransfer(Flight firstFlight, Flight secondFlight, String departure, String arrival);
+
+	List<Map<String, Flight>> getConnectedFlights(List<Flight> fList, String departure, String arrival);
 }

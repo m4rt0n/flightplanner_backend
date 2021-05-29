@@ -57,7 +57,7 @@ public class FlightCompanyController {
 	}
 
 	@GetMapping("/getflightsbyairports")
-	public Map<String, Flight> getAllFlightsByCompany(@RequestParam(value = "departure") String departure,
+	public List<Map<String, Flight>> getAllFlightsByCompany(@RequestParam(value = "departure") String departure,
 			@RequestParam(value = "arrival") String arrival) {
 		return service.getFlightsByAirports(departure, arrival);
 	}
