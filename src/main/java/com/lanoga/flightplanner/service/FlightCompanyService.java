@@ -2,10 +2,10 @@ package com.lanoga.flightplanner.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,26 +32,38 @@ public class FlightCompanyService implements IFlightCompanyService {
 		return cList;
 	}
 
+	@Override
 	public Company getCompanyById(long id) throws CompanyNotFoundException {
 		return cRepo.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
 	}
 
-	public Company saveCompany(String companyName) {
+	@Override
+	public Company saveCompany(String companyCode, String companyName) {
 		Company company = new Company();
 		company.setCompanyName(companyName);
+		company.setCompanyCode(companyCode);
 		return cRepo.save(company);
 	}
 
-	public Company updateCompany(long id, String companyName) throws CompanyNotFoundException {
+	@Override
+	public Company updateCompany(long id, String companyCode, String companyName) throws CompanyNotFoundException {
 		Company company = cRepo.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
 		company.setCompanyName(companyName);
+		company.setCompanyCode(companyCode);
 		return cRepo.save(company);
 	}
 
+	@Override
 	public void deleteCompanyById(long id) {
+		List<Flight> relatedFlights = new ArrayList<>();
+		fRepo.findAll().forEach(relatedFlights::add);
+		List<Flight> flightsToDelete = relatedFlights.stream().filter(f -> f.getCompany().getId() == id)
+				.collect(Collectors.toList());
+		flightsToDelete.forEach(f -> fRepo.delete(f));
 		cRepo.deleteById(id);
 	}
 
+	@Override
 	public List<Flight> getFlightsByCompany(String companyName) {
 		List<Company> cList = new ArrayList<>();
 		cRepo.findAll().forEach(cList::add);
@@ -62,52 +74,43 @@ public class FlightCompanyService implements IFlightCompanyService {
 	}
 
 	@Override
-	public List<Map<String, Flight>> getFlightsByAirports(String departure, String arrival) {
+	public List<Flight> getFlightsByAirports(String departure, String arrival) {
 		List<Flight> fList = new ArrayList<>();
 		fRepo.findAll().forEach(fList::add);
 
-		return getConnectedFlights(fList, departure, arrival);
-		/*
-		 * return fList.stream().filter(f ->
-		 * (f.getAirports().get(0).getAirportName().equals(departure) &&
-		 * f.getAirports().get(1).getAirportName().equals(arrival))).collect(Collectors.
-		 * toList());
-		 */
+		List<Flight> directFlights = getDirectFlights(fList, departure, arrival);
+
+		List<Flight> connectedFlights = getConnectedFlights(fList, departure, arrival);
+
+		List<Flight> directAndConnectedFlights = Stream.concat(directFlights.stream(), connectedFlights.stream())
+				.collect(Collectors.toList());
+
+		return directAndConnectedFlights;
 	}
 
 	@Override
-	public List<Map<String, Flight>> getConnectedFlights(List<Flight> fList, String departure, String arrival) {
+	public List<Flight> getDirectFlights(List<Flight> fList, String departure, String arrival) {
+		return fList.stream().filter(f -> (f.getDepartureAirport().getAirportName().equals(departure)
+				&& f.getArrivalAirport().getAirportName().equals(arrival))).collect(Collectors.toList());
+	}
 
-		List<Map<String, Flight>> listOfconnectedFlights = new ArrayList<Map<String, Flight>>();
-
+	@Override
+	public List<Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival) {
+		List<Flight> listOfconnectedFlights = new ArrayList<>();
 		for (int i = 0; i < fList.size(); i++) {
-
 			Flight firstFlight = fList.get(i);
 			for (int j = 0; j < fList.size(); j++) {
-
 				Flight secondFlight = fList.get(j);
-
 				if (isTransfer(firstFlight, secondFlight, departure, arrival)) {
-					System.out.println(String.format(" first: \n %s : %s %s - %s %s \n second: \n %s : %s %s - %s %s",
-							firstFlight.getCompany().getCompanyName(),
-							firstFlight.getDepartureAirport().getAirportName(), firstFlight.getDepartureTime(),
-							firstFlight.getArrivalAirport().getAirportName(), firstFlight.getArrivalTime(),
-							secondFlight.getCompany().getCompanyName(),
-							secondFlight.getDepartureAirport().getAirportName(), secondFlight.getDepartureTime(),
-							secondFlight.getArrivalAirport().getAirportName(), secondFlight.getArrivalTime()));
-					Map<String, Flight> connectedFlights = new HashMap<>();
-					connectedFlights.put("First", firstFlight);
-					connectedFlights.put("Second", secondFlight);
-					listOfconnectedFlights.add(connectedFlights);
+					listOfconnectedFlights.add(firstFlight);
+					listOfconnectedFlights.add(secondFlight);
 				}
-
 			}
-
 		}
-		// listOfconnectedFlights.add(connectedFlights);
 		return listOfconnectedFlights;
 	}
 
+	@Override
 	public boolean isTransfer(Flight firstFlight, Flight secondFlight, String departure, String arrival) {
 		return ((firstFlight != secondFlight)
 				&& (firstFlight.getDepartureAirport().getAirportName().equals(departure)
@@ -116,4 +119,5 @@ public class FlightCompanyService implements IFlightCompanyService {
 						.equals(secondFlight.getDepartureAirport().getAirportName()))
 				&& (firstFlight.getArrivalTime().compareTo(secondFlight.getDepartureTime()) < 0));
 	}
+
 }

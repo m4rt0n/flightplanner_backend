@@ -1,9 +1,9 @@
 package com.lanoga.flightplanner.FlightCompanyController;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +18,7 @@ import com.lanoga.flightplanner.model.CompanyNotFoundException;
 import com.lanoga.flightplanner.model.Flight;
 import com.lanoga.flightplanner.service.IFlightCompanyService;
 
+@CrossOrigin(origins = { "http://localhost:3002" })
 @RestController
 @RequestMapping(path = "/company")
 public class FlightCompanyController {
@@ -35,14 +36,14 @@ public class FlightCompanyController {
 	}
 
 	@PostMapping("/save")
-	public Company saveCompany(@PathVariable("name") String name) {
-		return service.saveCompany(name);
+	public Company saveCompany(@RequestParam(value = "code") String code, @RequestParam(value = "name") String name) {
+		return service.saveCompany(code, name);
 	}
 
 	@PutMapping("/update/{id}")
-	public Company updateCompany(@PathVariable("id") long id, @RequestParam(value = "name") String name)
-			throws CompanyNotFoundException {
-		return service.updateCompany(id, name);
+	public Company updateCompany(@PathVariable("id") long id, @RequestParam(value = "code") String code,
+			@RequestParam(value = "name") String name) throws CompanyNotFoundException {
+		return service.updateCompany(id, code, name);
 	}
 
 	@DeleteMapping("/delete/{id}")
@@ -56,8 +57,8 @@ public class FlightCompanyController {
 		return service.getFlightsByCompany(name);
 	}
 
-	@GetMapping("/getflightsbyairports")
-	public List<Map<String, Flight>> getAllFlightsByCompany(@RequestParam(value = "departure") String departure,
+	@PostMapping("/getflightsbyairports")
+	public List<Flight> getFlightsByAirports(@RequestParam(value = "departure") String departure,
 			@RequestParam(value = "arrival") String arrival) {
 		return service.getFlightsByAirports(departure, arrival);
 	}

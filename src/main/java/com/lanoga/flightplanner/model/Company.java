@@ -24,10 +24,12 @@ public class Company {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@Column(name = "company_code")
+	private String companyCode;
+
 	@Column(name = "company_name")
 	private String companyName;
 
-//	@JsonIgnore
 	@JsonManagedReference
 	@OneToMany(mappedBy = "company")
 	private List<Flight> flights;

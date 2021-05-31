@@ -35,10 +35,13 @@ public class FlightplannerApplication {
 			LocalDateTime now = LocalDateTime.of(2021, 5, 21, 10, 10);
 
 			Company qatar = new Company();
+			qatar.setCompanyCode("QA");
 			qatar.setCompanyName("Qatar");
 			Company lufthansa = new Company();
+			lufthansa.setCompanyCode("LH");
 			lufthansa.setCompanyName("Lufthansa");
 			Company ryanair = new Company();
+			ryanair.setCompanyCode("RA");
 			ryanair.setCompanyName("Ryanair");
 			cRepo.saveAll(Arrays.asList(qatar, lufthansa, ryanair));
 
