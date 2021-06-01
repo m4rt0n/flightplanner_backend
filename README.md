@@ -1,4 +1,4 @@
-# flightplanner_backend
+# Flightplanner Backend
 
 ## DB Diagram
 
