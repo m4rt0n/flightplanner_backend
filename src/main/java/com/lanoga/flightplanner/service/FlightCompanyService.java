@@ -77,15 +77,9 @@ public class FlightCompanyService implements IFlightCompanyService {
 	public List<Flight> getFlightsByAirports(String departure, String arrival) {
 		List<Flight> fList = new ArrayList<>();
 		fRepo.findAll().forEach(fList::add);
-
 		List<Flight> directFlights = getDirectFlights(fList, departure, arrival);
-
 		List<Flight> connectedFlights = getConnectedFlights(fList, departure, arrival);
-
-		List<Flight> directAndConnectedFlights = Stream.concat(directFlights.stream(), connectedFlights.stream())
-				.collect(Collectors.toList());
-
-		return directAndConnectedFlights;
+		return Stream.concat(directFlights.stream(), connectedFlights.stream()).collect(Collectors.toList());
 	}
 
 	@Override
