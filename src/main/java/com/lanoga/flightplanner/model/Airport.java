@@ -30,11 +30,11 @@ public class Airport {
 	@Column(name = "airport_name")
 	private String airportName;
 
-	@JsonBackReference(value = "departure-airport")
+	@JsonBackReference(value = "flight-departure")
 	@OneToMany(mappedBy = "departureAirport")
 	private List<Flight> departures;
 
-	@JsonBackReference(value = "arrival-airport")
+	@JsonBackReference(value = "flight-arrival")
 	@OneToMany(mappedBy = "arrivalAirport")
 	private List<Flight> arrivals;
 }
