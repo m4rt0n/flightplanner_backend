@@ -15,11 +15,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Table(name = "airport")
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class Airport {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,11 +30,11 @@ public class Airport {
 	@Column(name = "airport_name")
 	private String airportName;
 
-	@JsonBackReference
+	@JsonBackReference(value = "departure-airport")
 	@OneToMany(mappedBy = "departureAirport")
 	private List<Flight> departures;
 
-	@JsonBackReference
+	@JsonBackReference(value = "arrival-airport")
 	@OneToMany(mappedBy = "arrivalAirport")
 	private List<Flight> arrivals;
 }

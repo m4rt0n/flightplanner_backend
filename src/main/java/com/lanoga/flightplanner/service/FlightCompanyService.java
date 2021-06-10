@@ -27,9 +27,7 @@ public class FlightCompanyService implements IFlightCompanyService {
 	AirportRepo aRepo;
 
 	public List<Company> getAllCompanies() {
-		List<Company> cList = new ArrayList<>();
-		cRepo.findAll().forEach(cList::add);
-		return cList;
+		return cRepo.findAll();
 	}
 
 	@Override
@@ -38,11 +36,11 @@ public class FlightCompanyService implements IFlightCompanyService {
 	}
 
 	@Override
-	public Company saveCompany(String companyCode, String companyName) {
-		Company company = new Company();
-		company.setCompanyName(companyName);
-		company.setCompanyCode(companyCode);
-		return cRepo.save(company);
+	public Company saveCompany(Company companyfromRequest) {
+		Company companyToSave = new Company(companyfromRequest.getCompanyCode(), companyfromRequest.getCompanyName());
+		System.out.println(companyfromRequest.toString());
+		return cRepo.save(companyToSave);
+
 	}
 
 	@Override
@@ -55,8 +53,7 @@ public class FlightCompanyService implements IFlightCompanyService {
 
 	@Override
 	public void deleteCompanyById(long id) {
-		List<Flight> relatedFlights = new ArrayList<>();
-		fRepo.findAll().forEach(relatedFlights::add);
+		List<Flight> relatedFlights = fRepo.findAll();
 		List<Flight> flightsToDelete = relatedFlights.stream().filter(f -> f.getCompany().getId() == id)
 				.collect(Collectors.toList());
 		flightsToDelete.forEach(f -> fRepo.delete(f));
@@ -65,8 +62,7 @@ public class FlightCompanyService implements IFlightCompanyService {
 
 	@Override
 	public List<Flight> getFlightsByCompany(String companyName) {
-		List<Company> cList = new ArrayList<>();
-		cRepo.findAll().forEach(cList::add);
+		List<Company> cList = cRepo.findAll();
 		Optional<Company> company = cList.stream().filter(c -> c.getCompanyName().equals(companyName)).findFirst();
 		List<Flight> flights = company.get().getFlights();
 		flights.sort(Comparator.comparing(Flight::getDepartureTime));
@@ -75,8 +71,7 @@ public class FlightCompanyService implements IFlightCompanyService {
 
 	@Override
 	public List<Flight> getFlightsByAirports(String departure, String arrival) {
-		List<Flight> fList = new ArrayList<>();
-		fRepo.findAll().forEach(fList::add);
+		List<Flight> fList = fRepo.findAll();
 		List<Flight> directFlights = getDirectFlights(fList, departure, arrival);
 		List<Flight> connectedFlights = getConnectedFlights(fList, departure, arrival);
 		return Stream.concat(directFlights.stream(), connectedFlights.stream()).collect(Collectors.toList());
@@ -90,18 +85,18 @@ public class FlightCompanyService implements IFlightCompanyService {
 
 	@Override
 	public List<Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival) {
-		List<Flight> listOfconnectedFlights = new ArrayList<>();
+		List<Flight> listOfConnectedFlights = new ArrayList<>();
 		for (int i = 0; i < fList.size(); i++) {
 			Flight firstFlight = fList.get(i);
 			for (int j = 0; j < fList.size(); j++) {
 				Flight secondFlight = fList.get(j);
 				if (isTransfer(firstFlight, secondFlight, departure, arrival)) {
-					listOfconnectedFlights.add(firstFlight);
-					listOfconnectedFlights.add(secondFlight);
+					listOfConnectedFlights.add(firstFlight);
+					listOfConnectedFlights.add(secondFlight);
 				}
 			}
 		}
-		return listOfconnectedFlights;
+		return listOfConnectedFlights;
 	}
 
 	@Override

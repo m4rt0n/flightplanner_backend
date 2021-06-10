@@ -34,61 +34,26 @@ public class FlightplannerApplication {
 		return () -> {
 			LocalDateTime now = LocalDateTime.of(2021, 5, 21, 10, 10);
 
-			Company qatar = new Company();
-			qatar.setCompanyCode("QA");
-			qatar.setCompanyName("Qatar");
-			Company lufthansa = new Company();
-			lufthansa.setCompanyCode("LH");
-			lufthansa.setCompanyName("Lufthansa");
-			Company ryanair = new Company();
-			ryanair.setCompanyCode("RA");
-			ryanair.setCompanyName("Ryanair");
+			Company qatar = new Company("QA", "Qatar");
+			Company lufthansa = new Company("LH", "Lufthansa");
+			Company ryanair = new Company("RA", "Ryanair");
 			cRepo.saveAll(Arrays.asList(qatar, lufthansa, ryanair));
 
-			Airport moscow = new Airport();
-			moscow.setAirportName("Moscow");
-			Airport budapest = new Airport();
-			budapest.setAirportName("Budapest");
-			Airport berlin = new Airport();
-			berlin.setAirportName("Berlin");
-			Airport tbilisi = new Airport();
-			tbilisi.setAirportName("Tbilisi");
+			Airport moscow = new Airport("Moscow");
+			Airport budapest = new Airport("Budapest");
+			Airport berlin = new Airport("Berlin");
+			Airport tbilisi = new Airport("Tbilisi");
 			aRepo.saveAll(Arrays.asList(moscow, budapest, berlin, tbilisi));
 
-			Flight moscowToBudapest = new Flight();
-			moscowToBudapest.setDepartureAirport(moscow);
-			moscowToBudapest.setArrivalAirport(budapest);
-			moscowToBudapest.setDepartureTime(now);
-			moscowToBudapest.setArrivalTime(now.plusHours(1));
-			moscowToBudapest.setCompany(qatar);
+			Flight moscowToBudapest = new Flight(qatar, moscow, budapest, now, now.plusHours(1));
 
-			Flight moscowToBerlin = new Flight();
-			moscowToBerlin.setDepartureAirport(moscow);
-			moscowToBerlin.setArrivalAirport(berlin);
-			moscowToBerlin.setDepartureTime(now.plusHours(3));
-			moscowToBerlin.setArrivalTime(now.plusHours(4));
-			moscowToBerlin.setCompany(qatar);
+			Flight moscowToBerlin = new Flight(qatar, moscow, berlin, now.plusHours(3), now.plusHours(4));
 
-			Flight berlinToBudapest = new Flight();
-			berlinToBudapest.setDepartureAirport(berlin);
-			berlinToBudapest.setArrivalAirport(budapest);
-			berlinToBudapest.setDepartureTime(now.plusHours(6));
-			berlinToBudapest.setArrivalTime(now.plusHours(7));
-			berlinToBudapest.setCompany(ryanair);
+			Flight berlinToBudapest = new Flight(ryanair, berlin, budapest, now.plusHours(6), now.plusHours(7));
 
-			Flight moscowToTbilisi = new Flight();
-			moscowToTbilisi.setDepartureAirport(moscow);
-			moscowToTbilisi.setArrivalAirport(tbilisi);
-			moscowToTbilisi.setDepartureTime(now.plusHours(3));
-			moscowToTbilisi.setArrivalTime(now.plusHours(4));
-			moscowToTbilisi.setCompany(lufthansa);
+			Flight moscowToTbilisi = new Flight(lufthansa, moscow, tbilisi, now.plusHours(3), now.plusHours(4));
 
-			Flight tbilisiToBudapest = new Flight();
-			tbilisiToBudapest.setDepartureAirport(tbilisi);
-			tbilisiToBudapest.setArrivalAirport(budapest);
-			tbilisiToBudapest.setDepartureTime(now.plusHours(6));
-			tbilisiToBudapest.setArrivalTime(now.plusHours(7));
-			tbilisiToBudapest.setCompany(qatar);
+			Flight tbilisiToBudapest = new Flight(qatar, tbilisi, budapest, now.plusHours(6), now.plusHours(7));
 
 			fRepo.saveAll(Arrays.asList(moscowToBudapest, moscowToBerlin, berlinToBudapest, moscowToTbilisi,
 					tbilisiToBudapest));

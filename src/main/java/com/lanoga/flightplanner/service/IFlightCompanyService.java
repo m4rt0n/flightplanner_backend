@@ -11,7 +11,7 @@ public interface IFlightCompanyService {
 
 	public Company getCompanyById(long id) throws CompanyNotFoundException;
 
-	public Company saveCompany(String companyCode, String companyName);
+	Company saveCompany(Company comp);
 
 	public Company updateCompany(long id, String companyCode, String companyName) throws CompanyNotFoundException;
 
@@ -26,4 +26,5 @@ public interface IFlightCompanyService {
 	List<Flight> getConnectedFlights(List<Flight> fList, String departure, String arrival);
 
 	boolean isTransfer(Flight firstFlight, Flight secondFlight, String departure, String arrival);
+
 }
