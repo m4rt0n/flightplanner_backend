@@ -42,7 +42,7 @@ public class Flight {
 	private Airport departureAirport;
 
 	@NonNull
-	@JsonManagedReference(value = "flight-arrival")
+	@JsonManagedReference(value = "xflight-arrival")
 	@ManyToOne
 	@JoinColumn(name = "flight_arrival_id")
 	private Airport arrivalAirport;

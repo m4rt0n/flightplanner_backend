@@ -3,6 +3,7 @@ package com.lanoga.flightplanner;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -30,6 +31,11 @@ public class FlightplannerApplication {
 	}
 
 	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
+
+	@Bean
 	InitializingBean sendDatabase() {
 		return () -> {
 			LocalDateTime now = LocalDateTime.of(2021, 5, 21, 10, 10);
@@ -46,17 +52,13 @@ public class FlightplannerApplication {
 			aRepo.saveAll(Arrays.asList(moscow, budapest, berlin, tbilisi));
 
 			Flight moscowToBudapest = new Flight(qatar, moscow, budapest, now, now.plusHours(1));
-
 			Flight moscowToBerlin = new Flight(qatar, moscow, berlin, now.plusHours(3), now.plusHours(4));
-
 			Flight berlinToBudapest = new Flight(ryanair, berlin, budapest, now.plusHours(6), now.plusHours(7));
-
 			Flight moscowToTbilisi = new Flight(lufthansa, moscow, tbilisi, now.plusHours(3), now.plusHours(4));
-
 			Flight tbilisiToBudapest = new Flight(qatar, tbilisi, budapest, now.plusHours(6), now.plusHours(7));
-
 			fRepo.saveAll(Arrays.asList(moscowToBudapest, moscowToBerlin, berlinToBudapest, moscowToTbilisi,
 					tbilisiToBudapest));
+
 		};
 	}
 
