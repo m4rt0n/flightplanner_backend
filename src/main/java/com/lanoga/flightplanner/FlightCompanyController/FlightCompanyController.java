@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,8 +44,11 @@ public class FlightCompanyController {
 	}
 
 	// , consumes = MediaType.APPLICATION_JSON_VALUE
+	// @RequestBody CompanyDTO compDTO
 	@PostMapping(value = "/save")
-	public CompanyDTO saveCompany(@RequestBody CompanyDTO compDTO) throws ParseException, CompanyNotFoundException {
+	public CompanyDTO saveCompany(@RequestParam(value = "companyCode") String code,
+			@RequestParam(value = "companyName") String name) throws ParseException, CompanyNotFoundException {
+		CompanyDTO compDTO = new CompanyDTO(code, name);
 		Company comp = convertToDAO(compDTO);
 		Company compCreated = service.saveCompany(comp);
 		return convertToDTO(compCreated);
@@ -77,17 +79,19 @@ public class FlightCompanyController {
 
 	private CompanyDTO convertToDTO(Company comp) {
 		CompanyDTO compDTO = modelMapper.map(comp, CompanyDTO.class);
-		compDTO.setCompanyCodeDTO(comp.getCompanyCode());
-		compDTO.setCompanyNameDTO(comp.getCompanyName());
+		compDTO.setCompanyDTOCode(comp.getCompanyCode());
+		compDTO.setCompanyDTOName(comp.getCompanyName());
 		return compDTO;
 	}
 
 	private Company convertToDAO(CompanyDTO compDTO) throws ParseException, CompanyNotFoundException {
+		// System.out.println(compDTO.toString());
 		Company comp = modelMapper.map(compDTO, Company.class);
-		comp.setCompanyCode(compDTO.getCompanyCodeDTO());
-		comp.setCompanyName(compDTO.getCompanyNameDTO());
-		if (compDTO.getId() != null) {
-			Company oldComp = service.getCompanyById(compDTO.getId());
+
+		comp.setCompanyCode(compDTO.getCompanyDTOCode());
+		comp.setCompanyName(compDTO.getCompanyDTOName());
+		if (compDTO.getCompanyDTOId() != null) {
+			Company oldComp = service.getCompanyById(compDTO.getCompanyDTOId());
 			comp.setId(oldComp.getId());
 		}
 		return comp;

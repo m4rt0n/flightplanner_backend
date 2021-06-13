@@ -1,5 +1,9 @@
 package com.lanoga.flightplanner.model;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -10,12 +14,14 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 public class CompanyDTO {
 
-	private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long companyDTOId;
 
 	@NonNull
-	private String companyCodeDTO;
+	private String companyDTOCode;
 
 	@NonNull
-	private String companyNameDTO;
+	private String companyDTOName;
 
 }
